@@ -1,0 +1,5 @@
+[cisco_test_group]
+cisco_test ansible_host=10.1.1.1 ansible_ssh_common_arg='-o KexAlgorithms=+diffie-hellman-group1-sha1' ansible_ssh_user='USER' ansible_ssh_pass='EXAMPLE_PASSWORD_HERE'
+
+[cisco_switch_prod]
+Brian_3560-8 ansible_host=10.0.0.1 ansible_ssh_common_arg='-o KexAlgorithms=+diffie-hellman-group1-sha1' ansible_ssh_user='USER' ansible_ssh_pass='EXAMPLE_PASSWORD_HERE'

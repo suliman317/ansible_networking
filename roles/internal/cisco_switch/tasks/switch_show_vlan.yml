@@ -1,0 +1,11 @@
+---
+- hosts: all
+  connection: local
+
+  tasks:
+    - name: Show VLAN
+      ios_command:
+        commands: show vlan brief
+      register: show_vlan
+
+    - debug: var=show_vlan.stdout_lines

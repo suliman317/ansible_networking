@@ -1,0 +1,28 @@
+---
+- hosts: cisco_test_group
+  connection: local
+  vars:
+    vlan_id: 100
+    vlan_name: Network
+
+  tasks:
+    - name: Configure VLAN ID
+      ios_config:
+        lines:
+          - vlan {{ vlan_id }}
+
+    - name: Configure VLAN Name
+      ios_config:
+        lines:
+          - name {{ vlan_name }}
+        parents: vlan {{ vlan_id }}
+
+    - name: Show VLAN
+      ios_command:
+        commands: show vlan brief
+      register: show_vlan
+
+    - name: save running config
+       commands: copy run start
+
+    - debug: var=show_vlan.stdout_lines

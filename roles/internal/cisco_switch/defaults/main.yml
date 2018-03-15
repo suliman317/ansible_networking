@@ -1,0 +1,22 @@
+# vim: set noai ts=2 sw=2 et :
+  #Please use ansible vault to store your passwords
+---
+switch:
+  provider:
+    username: admin
+    password: 'example_password_here'
+    auth_pass: 'example_password_here'
+    authorize: yes
+    host: "{{ ansible_host }}"
+  gateway: '1.1.1.1'
+  netmask: '255.255.255.0'
+  domainname: 'domain.com'
+  ports: 52
+  port:
+    1: '!'
+    47: '!'
+    48: '!'
+    49: '!'
+    50: '!'
+    51: '!'
+    52: '!'

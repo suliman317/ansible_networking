@@ -1,0 +1,7 @@
+{% for x in users %}
+ip ssh pubkey-chain
+  username {{ x }}
+   key-hash {{ lookup('file','../../users/' + x + '/switch_rsa.pub') }}
+!
+{% endfor %}
+!

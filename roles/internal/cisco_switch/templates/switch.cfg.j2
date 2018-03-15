@@ -1,0 +1,64 @@
+!
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname {{ inventory_hostname }}
+!
+boot-start-marker
+boot-end-marker
+!
+enable password {{ switch.provider.auth_pass }}
+!
+username {{ switch.provider.username }} password 0 {{ switch.provider.password }}
+!
+no aaa new-model
+switch 1 provision ws-c3750g-48ts
+system mtu routing 1500
+ip domain-name {{ switch.domainname }}
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+ip ssh version 2
+ip ssh logging events
+!
+{% for x in range(1,switch.ports+1) %}
+{%   if switch.port.has_key(x) %}
+interface GigabitEthernet1/0/{{ x }}
+{{ switch.port[x] }}
+!
+{% else %}
+interface GigabitEthernet1/0/{{ x }}
+ switchport mode access
+ spanning-tree portfast
+!
+{% endif  %}
+{% endfor %}
+!
+interface Vlan1
+ ip address {{ ansible_host }} {{ switch.netmask }}
+!
+ip default-gateway {{ switch.gateway }}
+ip http server
+ip http secure-server
+!
+line con 0
+line vty 0
+ password ********
+ logging synchronous
+ login local
+ transport input ssh
+line vty 1 4
+ password ********
+ login local
+ transport input ssh
+line vty 5 15
+ password ********
+ login
+ transport input ssh
+!
+end

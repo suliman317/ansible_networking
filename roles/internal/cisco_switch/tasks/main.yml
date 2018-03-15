@@ -1,0 +1,85 @@
+#p vim: set noai ts=2 sw=2 et :
+## cisco_switch upgrade ios
+---
+## Add Support for Stacks (TODO)
+
+## Gather system information ...
+- name: "Gather System Facts"
+  ios_command:
+    commands:
+    - "show flash"
+    - "show version"
+
+## Set Facts (TODO)
+
+#- name: "Set Facts"
+#  module: ...
+
+## Delete Backup (TODO)
+
+#- name: "Delete Backup"
+#  module: ...
+
+## Setup to allow ssh/scp
+- name: "Setup SCP"
+  ios_config:
+    lines:
+    - "ip ssh time-out 120"
+    - "ip ssh authentication-retries 3"
+    - "ip scp server enable"
+    - "file prompt quiet"
+    save_when: modified
+
+### Copy New Image Over using TFTP
+- name: "Pull new image"
+  connection: ssh
+  raw: "copy tftp://10.1.1.3/c2960-lanbasek9-mz.150-2.SE11.bin flash:/c2960-lanbasek9-mz.150-2.SE11.bin"
+
+## Check File Exists (TODO)
+
+## Modify Switch Boot path-list
+- name: "Modify Boot"
+  ios_config:
+    lines:
+    - "boot system flash:/c2960-lanbasek9-mz.150-2.SE11.bin"
+    save_when: modified
+
+## Write To Memory
+- name: "Write Memory"
+  ios_command:
+    commands:
+    - "write mem"
+
+## Reload
+- name: "Reload"
+  ios_command:
+    provider:
+      timeout: 500
+    commands:
+    - "reload \ny"
+  async: 500
+  poll: 0
+  ignore_errors: yes
+
+## Wait for Reload
+- name: "Wait for Reload"
+  wait_for_connection:
+    delay: 500
+    timeout: 10
+
+## Verify Results
+- name: "Verify Results"
+  ios_command:
+    commands:
+    - "show version"
+  register: results
+
+### Programmtically Fail on Bad Results (TODO)
+
+#- name: "Pass/Fail?"
+#  module: ...
+
+#### Output Results
+- name: "Debug"
+  debug:
+    var: results
